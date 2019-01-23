@@ -44,10 +44,6 @@ namespace messend {
                 return mess;
             }
 
-            MessendPeer getPeer() {
-                return this->peer;
-            }
-
         private:
             MessendPeer peer;
     };
@@ -89,10 +85,6 @@ namespace messend {
                 else {
                     return PeerResult(false, NULL);
                 }
-            }
-
-            MessendAcceptor getAcceptor() {
-                return this->acceptor;
             }
 
         private:
