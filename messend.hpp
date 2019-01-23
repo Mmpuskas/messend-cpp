@@ -5,13 +5,7 @@ using namespace std;
 
 namespace messend {
 
-    void startup() {
-        messend_startup();
-    }
-
-    void shutdown() {
-        messend_shutdown();
-    }
+    
 
     class Message {
         public:
@@ -105,4 +99,25 @@ namespace messend {
             uint16_t port;
             MessendAcceptor acceptor;
     };
+
+
+    void startup() {
+        messend_startup();
+    }
+
+    void shutdown() {
+        messend_shutdown();
+    }
+
+    PeerResult initiate(std::string addr, uint16_t port) {
+        MessendPeer mpeer = messend_initiate((char *)addr.c_str(), port);
+
+        if (mpeer) {
+            Peer* peer = new Peer(mpeer);
+            return PeerResult(true, peer);
+        }
+        else {
+            return PeerResult(false, NULL);
+        }
+    }
 }
