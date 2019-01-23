@@ -16,21 +16,8 @@ int main(int argc, char **argv) {
 
     Acceptor acceptor(9001);
 
-    Peer* peer = 0;
+    Peer* peer = acceptor.acceptWait();
     
-    PeerResult result;
-        
-    while(!peer) {
-        printf("loopy\n");
-
-        result = acceptor.accept();
-        if (result.success) {
-            peer = result.peer;
-        }
-
-        std::this_thread::sleep_for (std::chrono::milliseconds(100));
-    }
-
     Message message = peer->receiveMessageWait();
     for (int i = 0; i < message.size; i++) {
         cout << message.data[i];

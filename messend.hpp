@@ -1,5 +1,7 @@
 #include "messend.h"
 #include <iostream>
+#include <thread>
+#include <chrono>
 
 using namespace std;
 
@@ -96,6 +98,15 @@ namespace messend {
                 else {
                     return PeerResult(false, NULL);
                 }
+            }
+
+            Peer* acceptWait() {
+
+                MessendPeer mpeer = messend_acceptor_accept_wait(this->acceptor);
+
+                Peer* peer = new Peer(mpeer);
+                    
+                return peer;
             }
 
         private:
