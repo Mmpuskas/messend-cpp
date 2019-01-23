@@ -29,11 +29,8 @@ namespace messend {
             }
 
             ~Peer() {
-                if (this->peer) {
-                    cout << "Free dis biz" << endl;
-                    messend_peer_free(this->peer);
-                    this->peer = 0;
-                }
+                messend_peer_free(this->peer);
+                this->peer = 0;
             }
 
             void sendMessage(Message mess) {
@@ -43,6 +40,14 @@ namespace messend {
                 message.size = mess.size;
 
                 messend_peer_send_message(this->peer, message);
+            }
+
+            Message receiveMessage() {
+                MessendMessage* message = messend_peer_receive_message(this->peer);
+                Message mess(message->data, message->size);
+                // NOTE: don't want to free message here because mess is
+                // taking ownership. Might be a safer way to do this
+                return mess;
             }
 
             MessendPeer getPeer() {
