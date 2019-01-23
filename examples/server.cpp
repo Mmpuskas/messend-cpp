@@ -1,35 +1,38 @@
+#include <stdio.h>
+#include <stdint.h>
+#include "messend.h"
 #include "messend.hpp"
+
+#include <iostream>
 #include <thread>
 #include <chrono>
 
-
+using namespace std;
 using namespace messend;
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
 
     messend::startup();
 
     Acceptor acceptor(9001);
 
-    PeerResult result = acceptor.accept();
+    Peer* peer = 0;
+    
+    PeerResult result;
+        
+    while(!peer) {
+        printf("loopy\n");
 
-    while (!result.success) {
         result = acceptor.accept();
+        if (result.success) {
+            peer = result.peer;
+        }
+
         std::this_thread::sleep_for (std::chrono::milliseconds(100));
     }
 
-    Peer peer = result.peer;
-
     Message message((uint8_t*)"Hi from server", 14);
-
-    peer.sendMessage(message);
-
-    std::this_thread::sleep_for (std::chrono::milliseconds(1000));
-
-    //result.success = false;
-    //while (!result.success) {
-    //    result = acceptor.accept();
-    //}
+    peer->sendMessage(message);
 
     messend::shutdown();
 
