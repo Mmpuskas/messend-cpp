@@ -5,8 +5,6 @@ using namespace std;
 
 namespace messend {
 
-    
-
     class Message {
         public:
             Message(uint8_t* data, uint64_t size) : data(data), size(size) {
@@ -36,8 +34,21 @@ namespace messend {
                 messend_peer_send_message(this->peer, message);
             }
 
-            Message receiveMessage() {
+            Message* receiveMessage() {
                 MessendMessage* message = messend_peer_receive_message(this->peer);
+                if (message) {
+                    Message* mess = new Message(message->data, message->size);
+                    // NOTE: don't want to free message here because mess is
+                    // taking ownership. Might be a safer way to do this
+                    return mess;
+                }
+                else {
+                    return NULL;
+                }
+            }
+
+            Message receiveMessageWait() {
+                MessendMessage* message = messend_peer_receive_message_wait(this->peer);
                 Message mess(message->data, message->size);
                 // NOTE: don't want to free message here because mess is
                 // taking ownership. Might be a safer way to do this

@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
     
     peer->sendMessage(message);
 
-    message = peer->receiveMessage();
+    message = peer->receiveMessageWait();
 
     for (int i = 0; i < message.size; i++) {
         cout << message.data[i];
