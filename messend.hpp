@@ -1,9 +1,15 @@
-#include "messend.h"
+#ifndef __MESSEND_HPP__
+#define __MESSEND_HPP__
+
 #include <iostream>
 #include <thread>
 #include <chrono>
 
+#include "messend.h"
+
 using namespace std;
+
+//extern bool messend_peer_is_connected(MessendPeer peer);
 
 namespace messend {
 
@@ -25,6 +31,10 @@ namespace messend {
             ~Peer() {
                 messend_peer_free(this->peer);
                 this->peer = 0;
+            }
+
+            bool isConnected() {
+                return messend_peer_is_connected(this->peer);
             }
 
             void sendMessage(Message mess) {
@@ -49,9 +59,14 @@ namespace messend {
                 }
             }
 
-            Message receiveMessageWait() {
+            Message* receiveMessageWait() {
                 MessendMessage* message = messend_peer_receive_message_wait(this->peer);
-                Message mess(message->data, message->size);
+
+                Message* mess = NULL;
+
+                if (message) {
+                    mess = new Message(message->data, message->size);
+                }
                 // NOTE: don't want to free message here because mess is
                 // taking ownership. Might be a safer way to do this
                 return mess;
@@ -135,3 +150,5 @@ namespace messend {
         }
     }
 }
+
+#endif //__MESSEND_HPP__

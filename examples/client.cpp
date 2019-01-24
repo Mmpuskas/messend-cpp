@@ -33,15 +33,28 @@ int main(int argc, char **argv) {
     }
 
     Message message(data, SIZE);
+
+    while (1) {
     
-    peer->sendMessage(message);
+        peer->sendMessage(message);
 
-    message = peer->receiveMessageWait();
+        Message* recvMessage = peer->receiveMessageWait();
 
-    for (int i = 0; i < message.size; i++) {
-        cout << message.data[i];
+        if (!recvMessage) {
+            if (!peer->isConnected()) {
+                cout << "Disconnected" << endl;
+                break;
+            }
+        }
+        else {
+            for (int i = 0; i < recvMessage->size; i++) {
+                cout << recvMessage->data[i];
+            }
+            cout << endl;
+
+            delete recvMessage;
+        }
     }
-    cout << endl;
 
     delete peer;
 
