@@ -76,8 +76,8 @@ namespace messend {
 
     class Acceptor {
         public:
-            Acceptor(uint16_t port) : port(port) {
-                this->acceptor = messend_acceptor_create(port);
+            Acceptor(std::string host, uint16_t port) : port(port) {
+                this->acceptor = messend_acceptor_create(host.c_str(), port);
             }
 
             ~Acceptor() {

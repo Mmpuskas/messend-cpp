@@ -14,7 +14,7 @@ int main(int argc, char **argv) {
 
     messend::startup();
 
-    Acceptor acceptor(9001);
+    Acceptor acceptor("127.0.0.1", 9001);
 
     Peer* peer = acceptor.acceptWait();
     
