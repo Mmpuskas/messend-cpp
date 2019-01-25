@@ -14,10 +14,14 @@ int main(int argc, char **argv) {
 
     Acceptor acceptor("127.0.0.1", 9001);
 
-    Peer* peer = acceptor.acceptWait();
+    cout << "Wait for connection" << endl;
+    auto peer = acceptor.acceptWait();
+    cout << "Connected" << endl;
 
     while (1) {
-        Message* message = peer->receiveMessageWait();
+        auto message = peer->receiveMessageWait();
+        //cout << "receiveMessage" << endl;
+        //auto message = peer->receiveMessage();
 
         if (!message) {
             if (!peer->isConnected()) {
@@ -26,6 +30,7 @@ int main(int argc, char **argv) {
             }
         }
         else {
+            cout << "respond" << endl;
 
             for (int i = 0; i < message->size; i++) {
                 cout << message->data[i];
@@ -35,8 +40,6 @@ int main(int argc, char **argv) {
             peer->sendMessage(*message);
         }
     }
-
-    delete peer;
 
     messend::shutdown();
 

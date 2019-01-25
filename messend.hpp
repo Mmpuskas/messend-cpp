@@ -46,20 +46,20 @@ namespace messend {
                 messend_peer_send_message(this->peer, message);
             }
 
-            Message* receiveMessage() {
+            std::unique_ptr<Message> receiveMessage() {
                 MessendMessage* message = messend_peer_receive_message(this->peer);
                 if (message) {
                     Message* mess = new Message(message->data, message->size);
                     // NOTE: don't want to free message here because mess is
                     // taking ownership. Might be a safer way to do this
-                    return mess;
+                    return std::unique_ptr<Message>(mess);
                 }
                 else {
-                    return NULL;
+                    return nullptr;
                 }
             }
 
-            Message* receiveMessageWait() {
+            std::unique_ptr<Message> receiveMessageWait() {
                 MessendMessage* message = messend_peer_receive_message_wait(this->peer);
 
                 Message* mess = NULL;
@@ -69,23 +69,11 @@ namespace messend {
                 }
                 // NOTE: don't want to free message here because mess is
                 // taking ownership. Might be a safer way to do this
-                return mess;
+                return std::unique_ptr<Message>(mess);
             }
 
         private:
             MessendPeer peer;
-    };
-
-    class PeerResult {
-        public:
-            PeerResult() : success(false), peer(NULL) {
-            }
-
-            PeerResult(bool success, Peer* peer) : success(success), peer(peer) {
-            }
-
-            bool success;
-            Peer* peer;
     };
 
 
@@ -100,28 +88,27 @@ namespace messend {
                 this->acceptor = 0;
             }
 
-            PeerResult accept() {
-            //MessendPeer accept() {
+            std::unique_ptr<Peer> accept() {
 
                 MessendPeer mpeer = messend_acceptor_accept(this->acceptor);
-                //return peer;
+
+                cout << mpeer << endl;
 
                 if (mpeer) {
                     Peer* peer = new Peer(mpeer);
-                    return PeerResult(true, peer);
+                    return std::unique_ptr<Peer>(peer);
                 }
                 else {
-                    return PeerResult(false, NULL);
+                    return std::unique_ptr<Peer>(nullptr);
                 }
             }
 
-            Peer* acceptWait() {
+            std::unique_ptr<Peer> acceptWait() {
 
                 MessendPeer mpeer = messend_acceptor_accept_wait(this->acceptor);
 
                 Peer* peer = new Peer(mpeer);
-                    
-                return peer;
+                return std::unique_ptr<Peer>(peer);
             }
 
         private:
@@ -138,15 +125,15 @@ namespace messend {
         messend_shutdown();
     }
 
-    PeerResult initiate(std::string addr, uint16_t port) {
+    unique_ptr<Peer> initiate(std::string addr, uint16_t port) {
         MessendPeer mpeer = messend_initiate((char *)addr.c_str(), port);
 
         if (mpeer) {
             Peer* peer = new Peer(mpeer);
-            return PeerResult(true, peer);
+            return std::unique_ptr<Peer>(peer);
         }
         else {
-            return PeerResult(false, NULL);
+            return std::unique_ptr<Peer>(nullptr);
         }
     }
 }

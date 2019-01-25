@@ -15,13 +15,11 @@ int main(int argc, char **argv) {
 
     messend::startup();
 
-    PeerResult result = messend::initiate("127.0.0.1", 9001);
+    auto peer = messend::initiate("127.0.0.1", 9001);
 
-    if (!result.success) {
+    if (!peer) {
         return 1;
     }
-
-    Peer* peer = result.peer;
 
     const uint64_t SIZE = 128;
     uint8_t data[SIZE];
@@ -38,7 +36,7 @@ int main(int argc, char **argv) {
     
         peer->sendMessage(message);
 
-        Message* recvMessage = peer->receiveMessageWait();
+        auto recvMessage = peer->receiveMessageWait();
 
         if (!recvMessage) {
             if (!peer->isConnected()) {
@@ -51,12 +49,8 @@ int main(int argc, char **argv) {
                 cout << recvMessage->data[i];
             }
             cout << endl;
-
-            delete recvMessage;
         }
     }
-
-    delete peer;
 
     messend::shutdown();
 
