@@ -11,7 +11,7 @@ add_library(Messend STATIC
 
 target_include_directories(Messend
     PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/private
+        ${CMAKE_CURRENT_SOURCE_DIR}/messend/private
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/messend/public
         ${CMAKE_CURRENT_SOURCE_DIR}/public

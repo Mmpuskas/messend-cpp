@@ -7,14 +7,18 @@
 
 #include "messend.h"
 
-using namespace std;
-
 //extern bool messend_peer_is_connected(MessendPeer peer);
 
-namespace messend {
+namespace msnd {
 
     class Message {
         public:
+            Message() :
+                data(nullptr)
+                , size(0)
+            {
+            }
+
             Message(uint8_t* data, uint64_t size) : data(data), size(size) {
             }
 
@@ -92,7 +96,7 @@ namespace messend {
 
                 MessendPeer mpeer = messend_acceptor_accept(this->acceptor);
 
-                cout << mpeer << endl;
+                std::cout << mpeer << std::endl;
 
                 if (mpeer) {
                     Peer* peer = new Peer(mpeer);
@@ -125,7 +129,7 @@ namespace messend {
         messend_shutdown();
     }
 
-    unique_ptr<Peer> initiate(std::string addr, uint16_t port) {
+    std::unique_ptr<Peer> initiate(std::string addr, uint16_t port) {
         MessendPeer mpeer = messend_initiate((char *)addr.c_str(), port);
 
         if (mpeer) {
