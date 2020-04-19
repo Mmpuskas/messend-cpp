@@ -96,14 +96,12 @@ namespace msnd {
 
                 MessendPeer mpeer = messend_acceptor_accept(this->acceptor);
 
-                std::cout << mpeer << std::endl;
-
                 if (mpeer) {
                     Peer* peer = new Peer(mpeer);
                     return std::unique_ptr<Peer>(peer);
                 }
                 else {
-                    return std::unique_ptr<Peer>(nullptr);
+                    return nullptr;
                 }
             }
 
