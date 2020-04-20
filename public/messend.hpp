@@ -119,15 +119,15 @@ namespace msnd {
     };
 
 
-    void startup() {
+    inline void startup() {
         messend_startup();
     }
 
-    void shutdown() {
+    inline void shutdown() {
         messend_shutdown();
     }
 
-    std::unique_ptr<Peer> initiate(std::string addr, uint16_t port) {
+    inline std::unique_ptr<Peer> initiate(std::string addr, uint16_t port) {
         MessendPeer mpeer = messend_initiate((char *)addr.c_str(), port);
 
         if (mpeer) {
